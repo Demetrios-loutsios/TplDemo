@@ -1,0 +1,10 @@
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/bin/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.deps.json
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/bin/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.runtimeconfig.json
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/bin/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.runtimeconfig.dev.json
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/bin/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.dll
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/bin/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.pdb
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/obj/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.csproj.CoreCompileInputs.cache
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/obj/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.AssemblyInfoInputs.cache
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/obj/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.AssemblyInfo.cs
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/obj/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.dll
+/home/dem/code/tpl-dataflow-demos/mega-bank-corp-tpl-demo/obj/Debug/netcoreapp2.0/mega-bank-corp-tpl-demo.pdb
