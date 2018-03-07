@@ -12,58 +12,58 @@ namespace mega_bank_corp_tpl_demo
             Console.WriteLine("Enter National ID number:");
             var userId = Console.ReadLine();
 
-            var openAccountBlock = new BroadcastBlock<CreateAccount>(null);
-            openAccountBlock.Post(new CreateAccount
+            var openAccountBlock = new BroadcastBlock<ApplicantDetails>(null);
+            openAccountBlock.Post(new ApplicantDetails
             {
                 NationalIdNumber = userId
             });
-            var creditCheckBlock = new TransformBlock<CreateAccount, PerformCheck>(createAccount =>
+            var creditCheckBlock = new TransformBlock<ApplicantDetails, PerformCheck>(applicantDetails =>
             {
-                Console.WriteLine($"Credit check - {createAccount.NationalIdNumber}");
+                Console.WriteLine($"Credit check - {applicantDetails.NationalIdNumber}");
                 return new PerformCheck
                 {
-                    Account = createAccount,
+                    Account = applicantDetails,
                     Success = true
                 };
             });
-            var dbsCheck = new TransformBlock<CreateAccount, PerformCheck>(createAccount =>
+            var dbsCheck = new TransformBlock<ApplicantDetails, PerformCheck>(applicantDetails =>
             {
-                Console.WriteLine($"DBS Check- {createAccount.NationalIdNumber}");
+                Console.WriteLine($"DBS Check- {applicantDetails.NationalIdNumber}");
                 return new PerformCheck
                 {
-                    Account = createAccount,
+                    Account = applicantDetails,
                     Success = true
                 };
             });
-            var sendEmailSuccessAction = new TransformBlock<CreateAccount, CreateAccount>(createAccount =>
+            var sendEmailSuccessAction = new TransformBlock<ApplicantDetails, ApplicantDetails>(applicantDetails =>
             {
-                Console.WriteLine($"Send Email (Success) - {createAccount.NationalIdNumber}");
-                return createAccount;
+                Console.WriteLine($"Send Email (Success) - {applicantDetails.NationalIdNumber}");
+                return applicantDetails;
             });
-            var sendPostSuccessActionBlock = new TransformBlock<CreateAccount, CreateAccount>(createAccount =>
+            var sendPostSuccessActionBlock = new TransformBlock<ApplicantDetails, ApplicantDetails>(applicantDetails =>
             {
-                Console.WriteLine($"Send Post (Success) - {createAccount.NationalIdNumber}");
-                return createAccount;
+                Console.WriteLine($"Send Post (Success) - {applicantDetails.NationalIdNumber}");
+                return applicantDetails;
             });
-            var notifyCardIssueDeptAction = new TransformBlock<CreateAccount, CreateAccount>(createAccount =>
+            var notifyCardIssueDeptAction = new TransformBlock<ApplicantDetails, ApplicantDetails>(applicantDetails =>
             {
-                Console.WriteLine($"Notify card issue department - {createAccount.NationalIdNumber}");
-                return createAccount;
+                Console.WriteLine($"Notify card issue department - {applicantDetails.NationalIdNumber}");
+                return applicantDetails;
             });
-            var openAccount = new TransformBlock<CreateAccount, CreateAccount>(createAccount =>
+            var openAccount = new TransformBlock<ApplicantDetails, ApplicantDetails>(applicantDetails =>
             {
-                Console.WriteLine($"openeing account- {createAccount.NationalIdNumber}");
+                Console.WriteLine($"openeing account- {applicantDetails.NationalIdNumber}");
 
-                sendEmailSuccessAction.Post(createAccount);
-                sendPostSuccessActionBlock.Post(createAccount);
-                notifyCardIssueDeptAction.Post(createAccount);
+                sendEmailSuccessAction.Post(applicantDetails);
+                sendPostSuccessActionBlock.Post(applicantDetails);
+                notifyCardIssueDeptAction.Post(applicantDetails);
                 
-                return createAccount;
+                return applicantDetails;
             });
             var checksCompletedBlock = new JoinBlock<PerformCheck, PerformCheck>(new GroupingDataflowBlockOptions { Greedy = false });
             var checksDesicionBlock = new ActionBlock<Tuple<PerformCheck, PerformCheck>>(tuple =>
             {
-                Console.WriteLine("Checks completed");
+                Console.WriteLine($"Checks completed - {tuple.Item1.Account.NationalIdNumber}");
 
                 if (tuple.Item1.Success && tuple.Item2.Success)
                 {
@@ -71,9 +71,12 @@ namespace mega_bank_corp_tpl_demo
                 }
             });
             
+            var postAccountOpenedActionsBlock = new JoinBlock<ApplicantDetails, ApplicantDetails, ApplicantDetails>(new GroupingDataflowBlockOptions { Greedy = false});
+            var audidCompletedBlock = new ActionBlock<Tuple<ApplicantDetails, ApplicantDetails, ApplicantDetails>>(tuple =>
+            {
+                Console.WriteLine($"Audit completed successfully - {tuple.Item1.NationalIdNumber}");
+            });
             
-            var postAccountOpenedActionsBlock = new JoinBlock<CreateAccount, CreateAccount, CreateAccount>(new GroupingDataflowBlockOptions { Greedy = false});
-          
             openAccountBlock.LinkTo(creditCheckBlock, new DataflowLinkOptions());
             openAccountBlock.LinkTo(dbsCheck, new DataflowLinkOptions());
             
@@ -84,10 +87,8 @@ namespace mega_bank_corp_tpl_demo
             sendEmailSuccessAction.LinkTo(postAccountOpenedActionsBlock.Target1);
             sendPostSuccessActionBlock.LinkTo(postAccountOpenedActionsBlock.Target2);
             notifyCardIssueDeptAction.LinkTo(postAccountOpenedActionsBlock.Target3);
-            postAccountOpenedActionsBlock.LinkTo(new ActionBlock<Tuple<CreateAccount, CreateAccount, CreateAccount>>(tuuple =>
-            {
-                Console.WriteLine("Audit completed successfully");
-            }));
+            
+            postAccountOpenedActionsBlock.LinkTo(audidCompletedBlock);
             
             Console.ReadKey();
         }

@@ -2,7 +2,7 @@
 {
     public class PerformCheck
     {
-        public CreateAccount Account { get; set; }
+        public ApplicantDetails Account { get; set; }
         public bool Success { get; set; }
     }
 }
