@@ -2,6 +2,11 @@
 {
     public class ApplicantDetails
     {
-        public string NationalIdNumber { get; set; }
+        public string NationalIdNumber { get; }
+
+        public ApplicantDetails(string nationalIdNumber)
+        {
+            NationalIdNumber = nationalIdNumber;
+        }
     }
 }

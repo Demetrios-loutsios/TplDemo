@@ -7,16 +7,7 @@ namespace mega_bank_corp_tpl_demo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Create a new MEGA Bank corp ");
-            Console.WriteLine("");
-            Console.WriteLine("Enter National ID number:");
-            var userId = Console.ReadLine();
-
             var openAccountBlock = new BroadcastBlock<ApplicantDetails>(null);
-            openAccountBlock.Post(new ApplicantDetails
-            {
-                NationalIdNumber = userId
-            });
             var creditCheckBlock = new TransformBlock<ApplicantDetails, PerformCheck>(applicantDetails =>
             {
                 Console.WriteLine($"Credit check - {applicantDetails.NationalIdNumber}");
@@ -75,6 +66,7 @@ namespace mega_bank_corp_tpl_demo
             var audidCompletedBlock = new ActionBlock<Tuple<ApplicantDetails, ApplicantDetails, ApplicantDetails>>(tuple =>
             {
                 Console.WriteLine($"Audit completed successfully - {tuple.Item1.NationalIdNumber}");
+                Console.WriteLine("");
             });
             
             openAccountBlock.LinkTo(creditCheckBlock, new DataflowLinkOptions());
@@ -90,7 +82,14 @@ namespace mega_bank_corp_tpl_demo
             
             postAccountOpenedActionsBlock.LinkTo(audidCompletedBlock);
             
-            Console.ReadKey();
+            Console.WriteLine("Create a new MEGA Bank corp ");
+            Console.WriteLine("Enter National ID number to begin application:");
+            while (true)
+            {
+                var userId = Console.ReadLine();
+                openAccountBlock.Post(new ApplicantDetails(userId));
+            }
+            
         }
     }
 }
